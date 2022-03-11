@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 	input.open(args->inputFileName);
 	if (!input.is_open())
 	{
-		std::cout << "Failed to open '" << args->inputFileName << "' for reading\n";
+		cout << "Failed to open '" << args->inputFileName << "' for reading\n";
 		return 1;
 	}
 
@@ -99,21 +99,26 @@ int main(int argc, char* argv[])
 	output.open(args->outputFileName);
 	if (!output.is_open())
 	{
-		std::cout << "Failed to open '" << args->outputFileName << "' for writing\n";
+		cout << "Failed to open '" << args->outputFileName << "' for writing\n";
 		return 1;
 	}
 
+	if (args->searchString.empty())
+	{
+		cout << "Search string shouldn't be empty\n";
+		return 1;
+	}
 	Replace(input, output, args->searchString, args->replaceString);
 
 	if (input.bad())
 	{
-		std::cout << "Failed to read data from input file\n";
+		cout << "Failed to read data from input file\n";
 		return 1;
 	}
 
 	if (!output.flush())
 	{
-		std::cout << "Failed to write data to output file\n";
+		cout << "Failed to write data to output file\n";
 		return 1;
 	}
 }

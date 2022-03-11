@@ -16,13 +16,18 @@ REM If output file is not specified, program must fail
 echo Test 3 passed
 
 REM Replace substring
-%MyProgram% input.txt "%TEMP%\output.txt" "a" "BB" && goto err
+%MyProgram% input.txt "%TEMP%\output.txt" "a" "BB" || goto err
+fc input-out.txt "%TEMP%\output.txt" || goto err
 echo Test 4 passed
 
-REM Empty search string
-%MyProgram% NonEmptyFile.txt "%TEMP%\output.txt" "" "" || goto err
-fc NonEmptyFile.txt "%TEMP%\output.txt" > nul || goto err
+REM Replace substring
+%MyProgram% input2.txt "%TEMP%\output.txt" "1231234" "B" || goto err
+fc input2-out.txt "%TEMP%\output.txt" || goto err
 echo Test 5 passed
+
+REM Empty search string, program must fail
+%MyProgram% input.txt "%TEMP%\output.txt" "" "B" && goto err
+echo Test 6 passed
 
 echo All tests passed successfuly
 exit /B 0
