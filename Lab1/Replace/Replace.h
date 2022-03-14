@@ -1,5 +1,7 @@
 #pragma once
 
-int FindFirstIndexOfString(std::string line, std::string substring);
+size_t FindFirstIndexOfString(std::string line, std::string substring);
 
-void Replace(std::ifstream& input, std::ofstream& output, std::string searchString, std::string replaceString);
+string ReplaceString(const string& subject, const string& searchStr, const string& replaceStr);
+
+void FindAndReplaceString(ifstream& input, ofstream& output, const string& searchString, const string& replaceString);

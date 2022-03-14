@@ -31,51 +31,98 @@ optional<Args> ParseArgs(int argc, char* argv[])
 	return args;
 }
 
-int FindFirstIndexOfString(string line, string substring)
+string::const_iterator FindFirstIndexOfString(
+	string::const_iterator first, 
+	string::const_iterator last, const string& searchStr)
 {
-	int index;
-	if (auto it = search(line.begin(), line.end(),
-			substring.begin(), substring.end());
-		it != line.end())
+	string::const_iterator index;
+	boyer_moore_searcher searcher(searchStr.begin(), searchStr.end());
+	if (auto it = search(first, last, searcher); it != last) 
 	{
-		index = it - line.begin();
+		index = it;
 	}
 	else
 	{
-		index = -1;
+		index = last;
 	}
 
 	return index;
 }
 
-void Replace(ifstream& input, ofstream& output, string searchString, string replaceString)
+string ReplaceString(const string& subject, const string& searchStr, const string& replaceStr)
 {
-	string oldLine;
-	size_t strLength = searchString.size();
+	string line = "";
+	string::const_iterator pos;
+	size_t strLength = searchStr.size();
 
-	while (getline(input, oldLine))
+	if (searchStr.empty())
 	{
-		string newLine = "";
-		int pos = 0;
-		size_t lineLength = oldLine.size();
-
-		for (auto i = 0; i < lineLength; i += pos + strLength)
+		line = subject;
+	}
+	else
+	{
+		for (auto it = subject.begin(); it != subject.end(); it = pos + strLength)
 		{
-			string subLine = oldLine.substr(i);
-			pos = FindFirstIndexOfString(subLine, searchString);
-			if (pos != -1)
+			pos = FindFirstIndexOfString(it, subject.end(), searchStr);
+			if (pos != subject.end())
 			{
-				newLine += subLine.substr(0, pos) + replaceString;
+				line.append(it, pos).append(replaceStr);
 			}
 			else
 			{
-				newLine += subLine;
-				break;
+				line.append(it, subject.end());
 			}
 		}
+	}
 
+	return line;
+}
+
+void FindAndReplaceString(ifstream& input, ofstream& output, const string& searchString, const string& replaceString)
+{
+	string line;
+	string newLine;
+
+	while (getline(input, line))
+	{
+		newLine = ReplaceString(line, searchString, replaceString);
 		output << newLine << "\n";
 	}
+}
+
+bool Replace(const string& inputFileName, const string& outputFileName, const string& searchString, const string& replaceString)
+{
+	ifstream input;
+	input.open(inputFileName);
+	if (!input.is_open())
+	{
+		cout << "Failed to open '" << inputFileName << "' for reading\n";
+		return false;
+	}
+
+	std::ofstream output;
+	output.open(outputFileName);
+	if (!output.is_open())
+	{
+		cout << "Failed to open '" << outputFileName << "' for writing\n";
+		return false;
+	}
+
+	FindAndReplaceString(input, output, searchString, replaceString);
+
+	if (input.bad())
+	{
+		cout << "Failed to read data from input file\n";
+		return false;
+	}
+
+	if (!output.flush())
+	{
+		cout << "Failed to write data to output file\n";
+		return 1;
+	}
+
+	return true;
 }
 
 int main(int argc, char* argv[])
@@ -87,38 +134,8 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	ifstream input;
-	input.open(args->inputFileName);
-	if (!input.is_open())
+	if (!Replace(args->inputFileName, args->inputFileName, args->searchString, args->replaceString))
 	{
-		cout << "Failed to open '" << args->inputFileName << "' for reading\n";
-		return 1;
-	}
-
-	std::ofstream output;
-	output.open(args->outputFileName);
-	if (!output.is_open())
-	{
-		cout << "Failed to open '" << args->outputFileName << "' for writing\n";
-		return 1;
-	}
-
-	if (args->searchString.empty())
-	{
-		cout << "Search string shouldn't be empty\n";
-		return 1;
-	}
-	Replace(input, output, args->searchString, args->replaceString);
-
-	if (input.bad())
-	{
-		cout << "Failed to read data from input file\n";
-		return 1;
-	}
-
-	if (!output.flush())
-	{
-		cout << "Failed to write data to output file\n";
 		return 1;
 	}
 }
