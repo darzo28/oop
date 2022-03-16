@@ -58,7 +58,7 @@ string ReplaceString(const string& subject, const string& searchStr, const strin
 			}
 			else
 			{
-				startPos = subject.end();
+				startPos = searchPos;
 			}
 		}
 
