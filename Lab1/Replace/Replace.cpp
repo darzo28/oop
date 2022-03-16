@@ -36,7 +36,7 @@ string ReplaceString(const string& subject, const string& searchStr, const strin
 	string line;
 	string::const_iterator searchPos;
 	size_t strLength = searchStr.size();
-	boyer_moore_searcher searcher(searchStr.begin(), searchStr.end());
+	boyer_moore_horspool_searcher searcher(searchStr.begin(), searchStr.end());
 
 	if (searchStr.empty())
 	{
