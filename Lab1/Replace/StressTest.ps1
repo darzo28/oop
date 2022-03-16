@@ -1,0 +1,1 @@
+Measure-Command {..\Release\Replace.exe StressTest.txt output.txt a bb}

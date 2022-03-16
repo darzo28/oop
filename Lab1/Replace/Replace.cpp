@@ -1,9 +1,9 @@
 ﻿#include <algorithm>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <optional>
 #include <string>
-#include "Replace.h"
 
 using namespace std;
 
@@ -31,51 +31,39 @@ optional<Args> ParseArgs(int argc, char* argv[])
 	return args;
 }
 
-string::const_iterator FindFirstIndexOfString(
-	string::const_iterator first, 
-	string::const_iterator last, const string& searchStr)
-{
-	string::const_iterator index;
-	boyer_moore_searcher searcher(searchStr.begin(), searchStr.end());
-	if (auto it = search(first, last, searcher); it != last) 
-	{
-		index = it;
-	}
-	else
-	{
-		index = last;
-	}
-
-	return index;
-}
-
 string ReplaceString(const string& subject, const string& searchStr, const string& replaceStr)
 {
-	string line = "";
-	string::const_iterator pos;
+	string line;
+	string::const_iterator searchPos;
 	size_t strLength = searchStr.size();
+	boyer_moore_searcher searcher(searchStr.begin(), searchStr.end());
 
 	if (searchStr.empty())
 	{
-		line = subject;
+		return subject;
 	}
 	else
 	{
-		for (auto it = subject.begin(); it != subject.end(); it = pos + strLength)
+		auto startPos = subject.begin();
+
+		while (startPos != subject.end())
 		{
-			pos = FindFirstIndexOfString(it, subject.end(), searchStr);
-			if (pos != subject.end())
+			searchPos = search(startPos, subject.end(), searcher);
+			line.append(startPos, searchPos);
+
+			if (searchPos != subject.end())
 			{
-				line.append(it, pos).append(replaceStr);
+				line.append(replaceStr);
+				startPos = searchPos + strLength;
 			}
 			else
 			{
-				line.append(it, subject.end());
+				startPos = subject.end();
 			}
 		}
-	}
 
-	return line;
+		return line;
+	}
 }
 
 void FindAndReplaceString(ifstream& input, ofstream& output, const string& searchString, const string& replaceString)
@@ -110,16 +98,10 @@ bool Replace(const string& inputFileName, const string& outputFileName, const st
 
 	FindAndReplaceString(input, output, searchString, replaceString);
 
-	if (input.bad())
-	{
-		cout << "Failed to read data from input file\n";
-		return false;
-	}
-
 	if (!output.flush())
 	{
 		cout << "Failed to write data to output file\n";
-		return 1;
+		return false;
 	}
 
 	return true;
@@ -134,8 +116,10 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	if (!Replace(args->inputFileName, args->inputFileName, args->searchString, args->replaceString))
+	if (!Replace(args->inputFileName, args->outputFileName, args->searchString, args->replaceString))
 	{
 		return 1;
 	}
+
+	return 0;
 }
