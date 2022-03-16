@@ -33,37 +33,33 @@ optional<Args> ParseArgs(int argc, char* argv[])
 
 string ReplaceString(const string& subject, const string& searchStr, const string& replaceStr)
 {
-	string line;
-	string::const_iterator searchPos;
-	size_t strLength = searchStr.size();
-	boyer_moore_horspool_searcher searcher(searchStr.begin(), searchStr.end());
-
 	if (searchStr.empty())
 	{
 		return subject;
 	}
-	else
+	string line;
+	size_t strLength = searchStr.size();
+	boyer_moore_horspool_searcher searcher(searchStr.begin(), searchStr.end());
+
+	auto startPos = subject.begin();
+
+	while (startPos != subject.end())
 	{
-		auto startPos = subject.begin();
+		const auto searchPos = search(startPos, subject.end(), searcher);
+		line.append(startPos, searchPos);
 
-		while (startPos != subject.end())
+		if (searchPos != subject.end())
 		{
-			searchPos = search(startPos, subject.end(), searcher);
-			line.append(startPos, searchPos);
-
-			if (searchPos != subject.end())
-			{
-				line.append(replaceStr);
-				startPos = searchPos + strLength;
-			}
-			else
-			{
-				startPos = searchPos;
-			}
+			line.append(replaceStr);
+			startPos = searchPos + strLength;
 		}
-
-		return line;
+		else
+		{
+			startPos = searchPos;
+		}
 	}
+
+	return line;
 }
 
 void FindAndReplaceString(ifstream& input, ofstream& output, const string& searchString, const string& replaceString)
