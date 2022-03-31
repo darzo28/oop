@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Replace", "Replace\Replace.vcxproj", "{3355ABC2-E7AB-4628-9ED9-E912E1539AF6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Radix", "Radix\Radix.vcxproj", "{B4255967-EE2D-498E-A3FB-00EF0E309E47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{3355ABC2-E7AB-4628-9ED9-E912E1539AF6}.Release|x64.Build.0 = Release|x64
 		{3355ABC2-E7AB-4628-9ED9-E912E1539AF6}.Release|x86.ActiveCfg = Release|Win32
 		{3355ABC2-E7AB-4628-9ED9-E912E1539AF6}.Release|x86.Build.0 = Release|Win32
+		{B4255967-EE2D-498E-A3FB-00EF0E309E47}.Debug|x64.ActiveCfg = Debug|x64
+		{B4255967-EE2D-498E-A3FB-00EF0E309E47}.Debug|x64.Build.0 = Debug|x64
+		{B4255967-EE2D-498E-A3FB-00EF0E309E47}.Debug|x86.ActiveCfg = Debug|Win32
+		{B4255967-EE2D-498E-A3FB-00EF0E309E47}.Debug|x86.Build.0 = Debug|Win32
+		{B4255967-EE2D-498E-A3FB-00EF0E309E47}.Release|x64.ActiveCfg = Release|x64
+		{B4255967-EE2D-498E-A3FB-00EF0E309E47}.Release|x64.Build.0 = Release|x64
+		{B4255967-EE2D-498E-A3FB-00EF0E309E47}.Release|x86.ActiveCfg = Release|Win32
+		{B4255967-EE2D-498E-A3FB-00EF0E309E47}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
